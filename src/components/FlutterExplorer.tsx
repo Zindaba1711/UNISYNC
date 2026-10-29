@@ -12,6 +12,7 @@ import {
   Download,
   BookOpen,
 } from 'lucide-react';
+import { downloadFlutterProjectZip } from '../services/zipExporter';
 
 interface FileNode {
   path: string;
@@ -26,6 +27,7 @@ interface FileNode {
 export const FlutterExplorer: React.FC = () => {
   const [selectedFilePath, setSelectedFilePath] = useState<string>('lib/main.dart');
   const [copied, setCopied] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [activeTab, setActiveTab] = useState<'files' | 'android_setup' | 'supabase_setup'>('files');
 
   // File tree structure with detailed contents
@@ -547,32 +549,48 @@ ON CONFLICT (id) DO NOTHING;`,
           </div>
         </div>
 
-        {/* View Switcher */}
-        <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-lg border border-slate-700/60 text-xs">
+        <div className="flex items-center gap-3">
+          {/* 1-Click Download Button */}
           <button
-            onClick={() => setActiveTab('files')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${
-              activeTab === 'files' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
-            }`}
+            onClick={() => {
+              setIsDownloading(true);
+              downloadFlutterProjectZip().finally(() => setIsDownloading(false));
+            }}
+            disabled={isDownloading}
+            className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-semibold text-xs px-3.5 py-1.5 rounded-lg shadow-sm transition-all disabled:opacity-50"
+            title="Download complete Flutter project ready for Android Studio"
           >
-            Source File Explorer
+            <Download className="w-3.5 h-3.5" />
+            <span>{isDownloading ? 'Packaging ZIP...' : 'Download Project (.zip)'}</span>
           </button>
-          <button
-            onClick={() => setActiveTab('android_setup')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${
-              activeTab === 'android_setup' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Android Studio Instructions
-          </button>
-          <button
-            onClick={() => setActiveTab('supabase_setup')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${
-              activeTab === 'supabase_setup' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Supabase Setup Guide
-          </button>
+
+          {/* View Switcher */}
+          <div className="flex items-center gap-1 bg-slate-800/80 p-1 rounded-lg border border-slate-700/60 text-xs">
+            <button
+              onClick={() => setActiveTab('files')}
+              className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${
+                activeTab === 'files' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Source File Explorer
+            </button>
+            <button
+              onClick={() => setActiveTab('android_setup')}
+              className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${
+                activeTab === 'android_setup' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Android Studio Instructions
+            </button>
+            <button
+              onClick={() => setActiveTab('supabase_setup')}
+              className={`px-3 py-1.5 rounded-md font-semibold transition-colors ${
+                activeTab === 'supabase_setup' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Supabase Setup Guide
+            </button>
+          </div>
         </div>
       </div>
 
@@ -658,6 +676,29 @@ ON CONFLICT (id) DO NOTHING;`,
             <p className="text-xs text-slate-400 mt-1">
               Follow these standard developer steps to run the native Flutter application on an Android device or emulator.
             </p>
+
+            <div className="mt-5 p-4 rounded-xl bg-gradient-to-r from-blue-900/60 to-slate-900 border border-blue-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+              <div>
+                <h3 className="font-bold text-white text-sm flex items-center gap-2">
+                  <Download className="w-4 h-4 text-emerald-400" />
+                  <span>Download Complete Flutter Project (.zip)</span>
+                </h3>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Contains all Dart source code, Gradle configurations, Android Manifest, and Supabase SQL schema.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setIsDownloading(true);
+                  downloadFlutterProjectZip().finally(() => setIsDownloading(false));
+                }}
+                disabled={isDownloading}
+                className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-md transition-all flex-shrink-0"
+              >
+                <Download className="w-4 h-4" />
+                <span>{isDownloading ? 'Preparing ZIP...' : 'Download Project ZIP'}</span>
+              </button>
+            </div>
 
             <div className="mt-6 space-y-5 text-xs text-slate-300">
               <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">

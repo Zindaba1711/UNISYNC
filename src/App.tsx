@@ -5,10 +5,11 @@ import {
   Code2,
   Database,
   ShieldCheck,
-  ExternalLink,
-  ChevronDown,
+  LogOut,
+  User,
 } from 'lucide-react';
 import { AdminDashboard } from './components/AdminDashboard';
+import { AdminLogin } from './components/AdminLogin';
 import { MobileSimulator } from './components/MobileSimulator';
 import { FlutterExplorer } from './components/FlutterExplorer';
 import { store } from './services/store';
@@ -18,10 +19,10 @@ export default function App() {
   const [viewMode, setViewMode] = useState<'admin' | 'mobile' | 'code'>('admin');
   const profiles = store.getProfiles();
 
-  // Active authenticated admin for the web dashboard
+  // Active authenticated admin for the web dashboard (starts on developer, can log out to AdminLogin)
   const developerUser = profiles.find((p) => p.role === 'developer') || profiles[0];
   const adminUser = profiles.find((p) => p.role === 'admin') || profiles[1];
-  const [activeAdmin, setActiveAdmin] = useState<Profile>(developerUser);
+  const [activeAdmin, setActiveAdmin] = useState<Profile | null>(developerUser);
 
   return (
     <div className="flex flex-col h-screen w-screen bg-slate-900 text-slate-100 font-sans overflow-hidden">
@@ -76,12 +77,11 @@ export default function App() {
           </button>
         </div>
 
-        {/* Right Info: Role switcher & Supabase Status */}
+        {/* Right Info: Role switcher / Log In & Out status */}
         <div className="flex items-center gap-3">
-          {viewMode === 'admin' && (
-            <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs">
+          {viewMode === 'admin' && activeAdmin && (
+            <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs">
               <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-              <span className="text-slate-400 text-[11px]">Role:</span>
               <select
                 value={activeAdmin.id}
                 onChange={(e) => {
@@ -97,6 +97,21 @@ export default function App() {
                   {adminUser.full_name} (Administrator)
                 </option>
               </select>
+              <button
+                onClick={() => setActiveAdmin(null)}
+                title="Sign out of Admin Dashboard"
+                className="text-[11px] text-rose-400 hover:text-rose-300 font-medium pl-1.5 border-l border-slate-700 flex items-center gap-1"
+              >
+                <LogOut className="w-3 h-3" />
+                <span>Log Out</span>
+              </button>
+            </div>
+          )}
+
+          {viewMode === 'admin' && !activeAdmin && (
+            <div className="text-[11px] text-amber-400 flex items-center gap-1.5 bg-amber-950/40 border border-amber-800/40 px-2.5 py-1 rounded-lg">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              <span>Admin Login Page</span>
             </div>
           )}
 
@@ -110,10 +125,17 @@ export default function App() {
       {/* Main Container */}
       <div className="flex-1 overflow-hidden">
         {viewMode === 'admin' && (
-          <AdminDashboard
-            currentAdmin={activeAdmin}
-            onLogout={() => setViewMode('mobile')}
-          />
+          activeAdmin ? (
+            <AdminDashboard
+              currentAdmin={activeAdmin}
+              onLogout={() => setActiveAdmin(null)}
+            />
+          ) : (
+            <AdminLogin
+              onLoginSuccess={(admin) => setActiveAdmin(admin)}
+              onSwitchToStudentView={() => setViewMode('mobile')}
+            />
+          )
         )}
 
         {viewMode === 'mobile' && (

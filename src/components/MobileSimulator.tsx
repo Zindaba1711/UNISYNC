@@ -16,6 +16,7 @@ import {
   Clock,
   XCircle,
   Eye,
+  EyeOff,
   LogOut,
   Moon,
   Sun,
@@ -50,6 +51,9 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({ onSwitchToAdmi
   const [authView, setAuthView] = useState<'login' | 'register'>('login');
   const [loginEmail, setLoginEmail] = useState('alex.morgan@university.edu');
   const [loginPassword, setLoginPassword] = useState('password123');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [forgotPasswordMsg, setForgotPasswordMsg] = useState<string | null>(null);
+
 
   // Register Form State - Strictly NO student ID!
   const [regFullName, setRegFullName] = useState('');
@@ -172,6 +176,19 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({ onSwitchToAdmi
           <span className="font-semibold text-white">UniSync Android App Preview</span>
         </div>
         <div className="flex items-center gap-2">
+          {currentUser ? (
+            <button
+              onClick={() => setCurrentUser(null)}
+              className="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-2 py-1 rounded border border-slate-700"
+              title="Return to Student Login page"
+            >
+              Sign Out (View Login)
+            </button>
+          ) : (
+            <span className="text-[10px] bg-blue-950/60 text-blue-300 border border-blue-800/60 px-2 py-0.5 rounded">
+              Student Login Screen
+            </span>
+          )}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
@@ -184,7 +201,7 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({ onSwitchToAdmi
               onClick={onSwitchToAdmin}
               className="text-[11px] bg-blue-600 hover:bg-blue-700 text-white font-medium px-2.5 py-1 rounded shadow-sm"
             >
-              Open Admin Dashboard
+              Admin Dashboard
             </button>
           )}
         </div>
@@ -233,25 +250,51 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({ onSwitchToAdmi
 
               {authView === 'login' ? (
                 <form onSubmit={handleLogin} className="space-y-3.5">
+                  {forgotPasswordMsg && (
+                    <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px]">
+                      {forgotPasswordMsg}
+                    </div>
+                  )}
+
                   <div>
                     <label className="block text-[11px] font-semibold text-slate-700 mb-1">University Email</label>
                     <input
                       type="email"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder="student@university.edu"
                       className="w-full text-xs px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-slate-700 mb-1">Password</label>
-                    <input
-                      type="password"
-                      value={loginPassword}
-                      onChange={(e) => setLoginPassword(e.target.value)}
-                      className="w-full text-xs px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      required
-                    />
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-[11px] font-semibold text-slate-700">Password</label>
+                      <button
+                        type="button"
+                        onClick={() => setForgotPasswordMsg(`Reset instructions sent to ${loginEmail}`)}
+                        className="text-[10px] text-blue-600 hover:underline"
+                      >
+                        Forgot?
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showLoginPassword ? 'text' : 'password'}
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full text-xs px-3 pr-8 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                      >
+                        {showLoginPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
                   </div>
 
                   <button
@@ -260,6 +303,33 @@ export const MobileSimulator: React.FC<MobileSimulatorProps> = ({ onSwitchToAdmi
                   >
                     Sign In
                   </button>
+
+                  {/* Demo Accounts Quick-Select */}
+                  <div className="pt-2 border-t border-slate-200/80">
+                    <span className="text-[10px] text-slate-400 block mb-1.5 font-medium">Quick Demo Students:</span>
+                    <div className="flex flex-wrap gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail('alex.morgan@university.edu');
+                          setLoginPassword('password123');
+                        }}
+                        className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-medium"
+                      >
+                        Alex Morgan (CS)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail('elena.rostova@university.edu');
+                          setLoginPassword('password123');
+                        }}
+                        className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-medium"
+                      >
+                        Elena (Engineering)
+                      </button>
+                    </div>
+                  </div>
 
                   <div className="text-center pt-2">
                     <button
