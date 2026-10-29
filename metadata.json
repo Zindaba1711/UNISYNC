@@ -1,0 +1,6 @@
+{
+  "name": "UniSync — University Student Platform & Admin Dashboard",
+  "description": "Your University, Connected. Centralized all-in-one university platform with lecture notes, past examination papers, announcements, notifications, resource moderation, and developer administration backend.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

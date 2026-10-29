@@ -1,0 +1,1077 @@
+# PROJECT: UNISYNC — UNIVERSITY STUDENT PLATFORM
+
+## 1. ROLE AND OBJECTIVE
+
+Act as a senior Android application developer, Flutter engineer, backend developer, database architect, UI/UX designer, and security engineer.
+
+Build a complete, functional Android application called **UniSync**.
+
+UniSync is a centralized, all-in-one university platform designed to simplify student life by enhancing collaboration, resource sharing, and campus communication while providing easy access to lecture notes, past examination papers, announcements, notifications, and other academic resources.
+
+The objective is to develop a working MVP that students can use and that the authorized development team can manage through a dedicated administrative backend.
+
+This must be a functional application, not merely a UI prototype.
+
+Prioritize reliability, security, usability, maintainability, and a professional design.
+
+Do not overcomplicate the initial implementation, but establish a strong foundation for future expansion.
+
+IMPORTANT: Do not silently replace the requested native Android application with a website. If the available Google AI Studio environment cannot directly generate a Flutter project, generate the complete Flutter source code and explain how to open and run it in Android Studio.
+
+---
+
+# 2. TECHNOLOGY STACK
+
+Use the following technologies:
+
+### Android application
+- Flutter
+- Dart
+- Android Studio
+
+### Backend
+- Supabase
+- PostgreSQL
+- Supabase Authentication
+- Supabase Storage
+- PostgreSQL Row Level Security
+- Supabase Edge Functions where privileged server-side operations are necessary
+
+### Additional functionality
+- Firebase Cloud Messaging for push notifications if required.
+- Git and GitHub for source control.
+
+Do not use PHP, MySQL, or Firebase as the primary database.
+
+PostgreSQL through Supabase must be the main application database.
+
+Keep the application compatible with Android phones and allow future expansion to iOS if needed.
+
+---
+
+# 3. UNISYNC BRANDING AND DESIGN
+
+Application name: UniSync
+
+Tagline: Your University, Connected.
+
+### Brand identity
+
+Use:
+- University blue as the primary colour.
+- White as the main supporting colour.
+- Navy blue for darker elements.
+- Light grey for secondary backgrounds.
+- A consistent modern sans-serif font.
+
+Use the official UniSync US logo provided by the development team.
+
+Do not redesign or distort the supplied logo.
+
+### Design requirements
+
+Create a professional educational technology interface featuring:
+- Modern typography.
+- Clean layouts.
+- Consistent spacing.
+- Rounded cards and buttons.
+- Intuitive navigation.
+- Attractive loading screens.
+- Clear error and success messages.
+- Light and dark themes.
+- Responsive layouts for different screen sizes.
+
+Avoid unnecessary animations, excessive gradients, and cluttered layouts.
+
+The interface should feel like a polished university technology product.
+
+---
+
+# 4. USER TYPES AND PERMISSIONS
+
+Implement three main account roles.
+
+### A. Student
+
+Students can:
+- Register and log in.
+- Browse academic resources.
+- Search notes and past papers.
+- Upload permitted resources.
+- Download available resources.
+- View announcements.
+- Receive notifications.
+- Manage their profiles.
+- View their uploaded resources.
+- Report inappropriate or incorrect content.
+- Change their theme preferences.
+- Log out.
+
+### B. Administrator
+
+Authorized administrators can:
+- View student accounts.
+- Manage academic resources.
+- Review and moderate uploads.
+- Publish announcements.
+- Send notifications.
+- Manage courses.
+- Review reported content.
+- Update platform information.
+- Manage resource categories.
+- Monitor basic platform statistics.
+- Suspend or reactivate accounts when necessary.
+- Review administrative activity logs.
+
+### C. Developer / Super Administrator
+
+Create a restricted developer administration role for authorized members of the UniSync development team.
+
+Developers should have access to a secure web-based administration dashboard.
+
+Depending on their assigned permissions, developers can:
+- Manage authorized administrator accounts.
+- Manage user roles.
+- Configure application settings.
+- Manage courses and academic departments.
+- Upload, update, approve, or remove academic resources.
+- Create, edit, publish, archive, or delete announcements.
+- Create and manage notifications.
+- Review reports from students.
+- View resource and user statistics.
+- Manage content categories.
+- Review administrative activity logs.
+- Configure maintenance notices.
+- Manage selected platform-wide settings.
+
+The developer dashboard must be protected by authentication and server-enforced permissions.
+
+Do not allow students to access administrative screens or privileged operations.
+
+Do not allow a user to make themselves an administrator by editing their profile.
+
+Developer and administrator permissions must be controlled through trusted backend configuration.
+
+---
+
+# 5. AUTHENTICATION AND REGISTRATION
+
+Implement real authentication using Supabase Auth.
+
+## Registration fields
+
+Students must register using only:
+
+- Full name.
+- Email address.
+- Password.
+- Programme of study.
+
+IMPORTANT: DO NOT INCLUDE STUDENT IDS.
+
+Do not request, collect, store, validate, or display student ID numbers anywhere in the application.
+
+Do not introduce a replacement identification number as a required registration field.
+
+Supabase's internal UUID may be used to associate accounts with their database records.
+
+## Registration functionality
+
+Implement:
+- Required-field validation.
+- Email format validation.
+- Password validation.
+- Password visibility toggle.
+- Registration success and error messages.
+- Email verification when enabled.
+- Profile creation after successful registration.
+
+Never store plain-text passwords.
+
+## Login
+
+Implement:
+- Email and password login.
+- Loading indicators.
+- Helpful error messages.
+- Session persistence.
+- Logout.
+- Password reset.
+- Protected routes.
+
+Users should be redirected to the correct screen depending on their authentication state and permissions.
+
+Students should go to the student dashboard.
+
+Administrators and developers should be directed to the appropriate administrative interface.
+
+---
+
+# 6. STUDENT DASHBOARD
+
+Create a dashboard containing:
+
+- Welcome message.
+- Student's name.
+- Total available notes.
+- Total available past papers.
+- Recent academic resources.
+- Recent UniSync announcements.
+- Recent notifications.
+- Quick-access buttons.
+- Search functionality.
+
+Include a bottom navigation bar:
+
+1. Home.
+2. Notes.
+3. Past Papers.
+4. Updates.
+5. Profile.
+
+Add a notification icon with an unread-notification count.
+
+The dashboard must retrieve real data from Supabase.
+
+Do not permanently hardcode statistics or recent content.
+
+Include loading, error, and empty states.
+
+---
+
+# 7. LECTURE NOTES
+
+Create a functional academic notes section.
+
+Students should be able to:
+- Browse available notes.
+- Search by title.
+- Filter by course.
+- View descriptions.
+- View the uploader's name.
+- View upload dates.
+- Open or download documents.
+- Report inappropriate resources.
+
+Each resource should display:
+- Title.
+- Course.
+- Description.
+- File type.
+- Uploader.
+- Upload date.
+
+Retrieve resource metadata from PostgreSQL and files from Supabase Storage.
+
+Implement appropriate permissions for viewing and downloading resources.
+
+---
+
+# 8. PAST EXAMINATION PAPERS
+
+Create a separate past papers section.
+
+Students should be able to:
+- Browse past papers.
+- Search by title.
+- Filter by course.
+- Filter by examination year.
+- View resource information.
+- Open or download files.
+- Report incorrect or inappropriate content.
+
+Each paper should contain:
+- Title.
+- Course.
+- Examination year.
+- Description.
+- Uploader.
+- Upload date.
+
+Use Supabase PostgreSQL for metadata and Supabase Storage for document files.
+
+---
+
+# 9. ACADEMIC RESOURCE UPLOADS
+
+Allow authenticated students to upload academic resources.
+
+Provide a form with:
+- Resource title.
+- Description.
+- Course.
+- Resource type.
+- Examination year when applicable.
+- File selection.
+
+Supported file types:
+- PDF.
+- DOC.
+- DOCX.
+- PPT.
+- PPTX.
+
+Implement:
+- File type validation.
+- Configurable maximum file size.
+- Upload progress.
+- Storage upload.
+- Database metadata creation.
+- Error handling.
+- Success messages.
+- Resource ownership.
+- Upload history.
+
+When students upload content, it should enter a review process if moderation is enabled.
+
+Use resource statuses such as:
+- Pending review.
+- Approved.
+- Rejected.
+
+Only approved resources should appear in the general student resource listings.
+
+Administrators should be able to review pending resources through the administration dashboard.
+
+Users must not be able to bypass moderation by directly manipulating the interface or database requests.
+
+Enforce permissions through backend policies.
+
+---
+
+# 10. UNISYNC UPDATES AND ANNOUNCEMENTS
+
+Create a section called UniSync Updates.
+
+Display:
+- Announcement title.
+- Message.
+- Publication date.
+- Author.
+- Optional image.
+- Optional category.
+
+Students can:
+- Browse updates.
+- Open announcement details.
+- Refresh the list.
+- Receive notifications about important updates.
+
+Authorized administrators and developers can:
+- Create announcements.
+- Edit announcements.
+- Publish announcements.
+- Schedule announcements where practical.
+- Archive announcements.
+- Delete announcements when authorized.
+- Choose whether an announcement should trigger a notification.
+
+Changes must be saved in PostgreSQL.
+
+Updates should appear in the student application without requiring a new app release.
+
+Do not hardcode announcement content in the application.
+
+---
+
+# 11. NOTIFICATION SYSTEM
+
+Build a proper notification system managed through the backend.
+
+This is an essential feature.
+
+Students should receive in-app notifications about:
+- New announcements.
+- Newly published academic resources.
+- Important university updates.
+- Resource approval or rejection.
+- Account-related information.
+- Maintenance notices.
+
+Implement a notifications screen showing:
+- Notification title.
+- Notification message.
+- Date and time.
+- Read or unread status.
+- Notification category.
+- Relevant destination when applicable.
+
+Students should be able to:
+- Open notifications.
+- Mark individual notifications as read.
+- Mark all notifications as read.
+- View unread notification counts.
+
+## Notification management for developers
+
+The developer dashboard must allow authorized personnel to:
+
+- Create notifications.
+- Edit draft notifications.
+- Send notifications to all students.
+- Send notifications to selected users when appropriate.
+- Target users by programme where supported.
+- Publish notifications immediately.
+- Schedule notifications if practical.
+- View notification history.
+- Review delivery status when available.
+- Cancel scheduled notifications.
+- Archive old notifications.
+
+Prevent unauthorized users from sending platform-wide notifications.
+
+## Notification implementation
+
+Store notification records in PostgreSQL.
+
+Use a suitable backend function to create notifications securely.
+
+If push notifications are implemented, use Firebase Cloud Messaging or another appropriate delivery service.
+
+Do not put privileged notification credentials in the Flutter application.
+
+Explain any external configuration required.
+
+The in-app notification system must work even if push notifications have not been configured.
+
+Do not falsely report push notifications as delivered when the delivery service has not confirmed delivery.
+
+---
+
+# 12. DEVELOPER ADMINISTRATION BACKEND
+
+Create a separate, responsive web-based administration dashboard.
+
+The dashboard should be usable on desktop computers and mobile browsers.
+
+It must connect to the same Supabase backend as the Android application.
+
+Suggested URL structure after deployment:
+
+- Student application: Android application.
+- Administration dashboard: a separately deployed web application.
+
+Do not expose administrative controls inside the student interface unless the authenticated user has the necessary permissions.
+
+## Administration dashboard navigation
+
+Include:
+
+1. Overview.
+2. Users.
+3. Courses.
+4. Academic Resources.
+5. Upload Reviews.
+6. Announcements.
+7. Notifications.
+8. Reports.
+9. Platform Settings.
+10. Activity Logs.
+11. Logout.
+
+## A. Overview
+
+Display real database statistics:
+- Total registered users.
+- Total approved resources.
+- Total pending uploads.
+- Total courses.
+- Total announcements.
+- Total notifications.
+
+Show recent activity where available.
+
+## B. User Management
+
+Allow authorized administrators to:
+- View users.
+- Search users.
+- Filter users.
+- View permitted profile information.
+- Suspend or reactivate accounts where supported.
+- Assign roles only when authorized.
+
+Do not display passwords or sensitive authentication credentials.
+
+Use secure server-side operations for privileged account management.
+
+## C. Course Management
+
+Allow authorized administrators to:
+- Create courses.
+- Edit course details.
+- View courses.
+- Archive courses.
+- Manage course codes and names.
+- Assign courses to academic departments.
+
+Changes should appear in relevant student screens.
+
+## D. Resource Management
+
+Allow authorized administrators to:
+- View uploaded resources.
+- Search resources.
+- Filter resources by course and type.
+- Approve uploads.
+- Reject uploads with reasons.
+- Edit permitted resource metadata.
+- Remove inappropriate resources.
+- Review reported resources.
+
+## E. Announcement Management
+
+Allow authorized personnel to:
+- Create announcements.
+- Edit announcements.
+- Publish announcements.
+- Archive announcements.
+- Delete announcements when appropriate.
+- Decide whether announcements should generate notifications.
+
+## F. Notification Management
+
+Provide a complete notification management interface.
+
+Authorized developers should be able to:
+- Compose notifications.
+- Select recipients.
+- Choose notification categories.
+- Send immediately.
+- Schedule where supported.
+- Review previous notifications.
+- Inspect delivery status when available.
+- Cancel scheduled notifications.
+
+Require confirmation before sending platform-wide notifications.
+
+## G. Reports
+
+Display basic information about:
+- Reported resources.
+- Reported announcements.
+- User-submitted issues.
+
+Allow authorized administrators to review and resolve reports.
+
+## H. Platform Settings
+
+Provide controlled settings for:
+- Platform name.
+- Maintenance message.
+- Resource upload limits.
+- Allowed file types.
+- Resource moderation settings.
+- Announcement preferences.
+
+Never allow the dashboard to change critical security policies through unrestricted SQL execution.
+
+## I. Activity Logs
+
+Record important administrative actions, including:
+- Resource approvals.
+- Resource removals.
+- Announcement publication.
+- Notification creation and sending.
+- Role changes.
+- Account suspensions.
+- Platform setting changes.
+
+Store the actor, action, relevant record, and timestamp.
+
+Prevent ordinary users from modifying activity logs.
+
+---
+
+# 13. STUDENT PROFILE
+
+Create a profile page showing:
+
+- Full name.
+- Email address.
+- Programme of study.
+- Account creation date.
+
+Do not include student IDs.
+
+Allow users to edit permitted profile information.
+
+Include:
+- My uploaded resources.
+- Theme preferences.
+- Logout.
+
+Students must only be able to modify their own profiles.
+
+Role changes must not be available through ordinary student profile editing.
+
+---
+
+# 14. SEARCH AND FILTERING
+
+Implement functional search and filtering for:
+- Lecture notes.
+- Past papers.
+- Courses.
+- Announcements.
+
+Use real database records.
+
+Provide appropriate empty states when no results are found.
+
+Avoid loading the entire database into the application unnecessarily.
+
+Use pagination or incremental loading where appropriate.
+
+---
+
+# 15. DATABASE DESIGN
+
+Create a complete PostgreSQL schema.
+
+Save it as:
+
+supabase/schema.sql
+
+Include the following tables.
+
+## profiles
+
+Fields:
+- id: UUID primary key referencing auth.users.id.
+- full_name: TEXT.
+- email: TEXT.
+- programme: TEXT.
+- role: TEXT with a default of student.
+- created_at: TIMESTAMPTZ.
+
+There must be no student_id column.
+
+## courses
+
+Fields:
+- id: UUID primary key.
+- course_code: TEXT.
+- course_name: TEXT.
+- department: TEXT, nullable.
+- created_at: TIMESTAMPTZ.
+
+## resources
+
+Fields:
+- id: UUID primary key.
+- title: TEXT.
+- description: TEXT.
+- resource_type: TEXT.
+- course_id: UUID referencing courses.id.
+- file_path: TEXT.
+- uploaded_by: UUID referencing profiles.id.
+- examination_year: INTEGER, nullable.
+- status: TEXT.
+- rejection_reason: TEXT, nullable.
+- created_at: TIMESTAMPTZ.
+- updated_at: TIMESTAMPTZ.
+
+## announcements
+
+Fields:
+- id: UUID primary key.
+- title: TEXT.
+- message: TEXT.
+- image_path: TEXT, nullable.
+- author_id: UUID referencing profiles.id.
+- status: TEXT.
+- published_at: TIMESTAMPTZ, nullable.
+- created_at: TIMESTAMPTZ.
+- updated_at: TIMESTAMPTZ.
+
+## notifications
+
+Fields:
+- id: UUID primary key.
+- title: TEXT.
+- message: TEXT.
+- category: TEXT.
+- created_by: UUID referencing profiles.id, nullable where appropriate.
+- created_at: TIMESTAMPTZ.
+- scheduled_at: TIMESTAMPTZ, nullable.
+- sent_at: TIMESTAMPTZ, nullable.
+- status: TEXT.
+
+## notification_recipients
+
+Fields:
+- id: UUID primary key.
+- notification_id: UUID referencing notifications.id.
+- user_id: UUID referencing profiles.id.
+- is_read: BOOLEAN with a default of false.
+- read_at: TIMESTAMPTZ, nullable.
+- delivery_status: TEXT, where applicable.
+- created_at: TIMESTAMPTZ.
+
+## resource_reports
+
+Fields:
+- id: UUID primary key.
+- resource_id: UUID referencing resources.id.
+- reporter_id: UUID referencing profiles.id.
+- reason: TEXT.
+- description: TEXT, nullable.
+- status: TEXT.
+- reviewed_by: UUID referencing profiles.id, nullable.
+- created_at: TIMESTAMPTZ.
+
+## activity_logs
+
+Fields:
+- id: UUID primary key.
+- actor_id: UUID referencing profiles.id, nullable.
+- action: TEXT.
+- entity_type: TEXT.
+- entity_id: UUID, nullable.
+- details: JSONB, where appropriate.
+- created_at: TIMESTAMPTZ.
+
+Add suitable indexes, foreign keys, unique constraints, timestamps, and validation constraints.
+
+Use appropriate database functions and triggers for profile creation and auditing where necessary.
+
+Prevent duplicate notifications to the same recipient when inappropriate.
+
+Use transactions or carefully designed backend functions for operations that require multiple database changes to succeed together.
+
+---
+
+# 16. BACKEND SECURITY AND ACCESS CONTROL
+
+Security is a core requirement.
+
+Enable Row Level Security on all relevant tables.
+
+Implement policies ensuring that:
+
+- Students can access only permitted resources.
+- Only approved resources appear in public student listings.
+- Authenticated users can submit permitted uploads.
+- Users can edit or delete only resources they own, subject to moderation rules.
+- Students can view and edit only their own profiles.
+- Users can view only notifications intended for them.
+- Students can mark only their own notifications as read.
+- Only authorized administrators can publish announcements.
+- Only authorized developers can perform privileged administrative actions.
+- Students cannot assign themselves administrator or developer roles.
+- Students cannot send notifications to other users.
+- Students cannot modify activity logs.
+- Storage permissions match the intended access rules.
+
+Use trusted backend authorization for administrative operations.
+
+Do not rely only on hiding buttons in the interface.
+
+Do not expose:
+- Supabase service-role keys.
+- Database passwords.
+- Private signing keys.
+- Privileged notification credentials.
+- Administrative secrets.
+
+Use public client credentials only where appropriate, and enforce security on the backend.
+
+For privileged account operations, use authenticated server-side functions with role verification.
+
+Create a secure initial procedure for assigning the first developer administrator.
+
+Never create a publicly accessible endpoint that grants administrator access to anyone.
+
+---
+
+# 17. STORAGE CONFIGURATION
+
+Create clear instructions for configuring Supabase Storage.
+
+Suggested buckets:
+
+- academic-resources.
+- announcement-images.
+- profile-images, if profile images are implemented.
+
+Use appropriate access policies.
+
+Validate uploads on the client and enforce relevant restrictions through the backend.
+
+Avoid publicly exposing private files unnecessarily.
+
+If resources are available only to authenticated users, implement controlled access and signed URLs or another appropriate protected download method.
+
+Explain the difference between public and private storage.
+
+---
+
+# 18. PROJECT STRUCTURE
+
+Organize the Flutter application as follows:
+
+lib/
+  main.dart
+
+  core/
+    constants/
+    theme/
+    utils/
+
+  models/
+    profile.dart
+    course.dart
+    resource.dart
+    announcement.dart
+    notification.dart
+
+  services/
+    auth_service.dart
+    resource_service.dart
+    announcement_service.dart
+    notification_service.dart
+    profile_service.dart
+
+  screens/
+    splash_screen.dart
+    welcome_screen.dart
+    login_screen.dart
+    register_screen.dart
+    dashboard_screen.dart
+    notes_screen.dart
+    past_papers_screen.dart
+    upload_resource_screen.dart
+    updates_screen.dart
+    notifications_screen.dart
+    profile_screen.dart
+
+  widgets/
+    resource_card.dart
+    announcement_card.dart
+    notification_card.dart
+    loading_indicator.dart
+    empty_state.dart
+
+supabase/
+  schema.sql
+
+admin-dashboard/
+  Include the appropriate files for a separate responsive web administration interface.
+
+assets/
+  images/
+    unisync_logo.png
+
+Also include:
+- pubspec.yaml.
+- README.md.
+- .gitignore.
+- Environment configuration instructions.
+
+Choose suitable dependencies and explain their purpose.
+
+Do not commit secret environment files to GitHub.
+
+---
+
+# 19. ERROR HANDLING AND RELIABILITY
+
+Implement:
+- Form validation.
+- Loading indicators.
+- Network error handling.
+- Authentication error handling.
+- Database error handling.
+- File upload error handling.
+- Empty states.
+- Retry functionality.
+- Confirmation dialogs for destructive actions.
+- Clear success and failure messages.
+
+Handle interrupted network connections gracefully.
+
+Avoid duplicate submissions.
+
+Do not claim that a notification was delivered unless delivery has been confirmed by the relevant service.
+
+Do not leave buttons that appear functional but do nothing.
+
+---
+
+# 20. TESTING REQUIREMENTS
+
+Test the following:
+
+### Student application
+- Registration.
+- Login.
+- Logout.
+- Password reset.
+- Session persistence.
+- Dashboard data retrieval.
+- Resource search.
+- Course filtering.
+- Resource uploads.
+- Resource downloads.
+- Resource moderation.
+- Announcement retrieval.
+- Notification retrieval.
+- Read and unread notification states.
+- Profile editing.
+- Dark mode.
+
+### Administrative backend
+- Authorized administrator login.
+- Unauthorized access rejection.
+- User management permissions.
+- Course creation and editing.
+- Resource review and moderation.
+- Announcement publication.
+- Notification creation.
+- Notification recipient selection.
+- Notification history.
+- Activity logging.
+- Administrative permission enforcement.
+
+### Security
+Verify that:
+- Students cannot access developer endpoints.
+- Students cannot change their roles.
+- Students cannot manage other users' accounts.
+- Students cannot read other users' private notifications.
+- Unauthorized users cannot publish announcements.
+- Privileged secrets are not exposed in the client.
+- Storage permissions prevent unauthorized file access.
+
+Test the main application on an Android emulator and, where possible, a physical Android device.
+
+Test the administration dashboard in a desktop browser.
+
+---
+
+# 21. MVP SCOPE
+
+Prioritize these features for the initial release:
+
+1. Student authentication.
+2. Student dashboard.
+3. Lecture notes.
+4. Past papers.
+5. Academic resource uploads.
+6. UniSync Updates.
+7. In-app notifications.
+8. Student profiles.
+9. Developer administration dashboard.
+10. Course management.
+11. Resource moderation.
+12. Secure backend permissions.
+
+Do not implement these features yet:
+- AI study assistant.
+- Marketplace.
+- Chat system.
+- Payment processing.
+- Timetable generator.
+- Complex analytics.
+- Social networking feed.
+
+Keep the architecture extensible so these can be added later.
+
+---
+
+# 22. IMPLEMENTATION PHASES
+
+Build the project incrementally.
+
+### Phase 1: Foundation
+- Set up the project.
+- Establish the brand theme.
+- Create navigation.
+- Configure Supabase.
+- Generate the SQL schema.
+
+### Phase 2: Authentication
+- Implement registration.
+- Implement login and logout.
+- Create profiles.
+- Implement session handling.
+
+### Phase 3: Student application
+- Create the dashboard.
+- Implement notes.
+- Implement past papers.
+- Add search and filtering.
+
+### Phase 4: Resource management
+- Implement uploads.
+- Configure Storage.
+- Add moderation.
+- Implement downloads.
+
+### Phase 5: Updates and notifications
+- Implement announcements.
+- Build in-app notifications.
+- Add read/unread states.
+- Add secure notification management.
+
+### Phase 6: Developer administration
+- Build the separate web dashboard.
+- Implement user management.
+- Implement course management.
+- Implement resource moderation.
+- Implement announcement management.
+- Implement notification management.
+- Add activity logs.
+
+### Phase 7: Finalization
+- Review security policies.
+- Test authentication and permissions.
+- Fix compilation errors.
+- Test database operations.
+- Update the README.
+- Document deployment procedures.
+
+Do not replace working files unnecessarily.
+
+Keep the implementation consistent across all phases.
+
+If the entire application is too large to generate at once, work incrementally and continue from the existing project files.
+
+---
+
+# 23. FINAL DELIVERABLES
+
+Provide:
+
+1. Complete Flutter Android application source code.
+2. Complete developer administration dashboard source code.
+3. PostgreSQL schema.
+4. Row Level Security policies.
+5. Supabase Storage configuration instructions.
+6. Secure administrator initialization procedure.
+7. Required dependencies.
+8. README documentation.
+9. Android Studio setup instructions.
+10. Supabase setup instructions.
+11. Local development instructions.
+12. Deployment instructions.
+13. Testing instructions.
+14. A list of completed features.
+15. A list of incomplete features and external configuration requirements.
+
+Explain how to run the Android application and administration dashboard separately.
+
+Ensure the Android application and administration dashboard connect to the same Supabase backend.
+
+# FINAL INSTRUCTION
+
+Build UniSync as a secure, maintainable, functional Android MVP with a dedicated developer administration backend.
+
+The backend must allow authorized members of the development team to manage users, courses, academic resources, uploads, announcements, notifications, reports, and platform settings without modifying the application source code for every content update.
+
+Students must never be required to provide student IDs.
+
+Prioritize real functionality, security, and clean architecture over a visually impressive but nonfunctional prototype.
+
+Do not claim that a feature has been completed or tested unless it actually has been implemented or tested.
